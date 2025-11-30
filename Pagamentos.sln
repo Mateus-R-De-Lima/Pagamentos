@@ -25,6 +25,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5 - Infrastructure", "5 - I
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pagamentos.Infrastructure", "5 - Infrastructure\Pagamentos.Infrastructure\Pagamentos.Infrastructure.csproj", "{ABFFAD01-5C45-4BF0-BEF0-DAE7F2585151}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "9 - Shared", "9 - Shared", "{4B9220AC-69EF-4471-9A9E-97BFB9A1D4CD}"
+	ProjectSection(SolutionItems) = preProject
+		9 - Shared\docker-compose.yml = 9 - Shared\docker-compose.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
