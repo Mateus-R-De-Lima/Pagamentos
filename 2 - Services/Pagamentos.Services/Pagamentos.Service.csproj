@@ -16,4 +16,8 @@
 
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\..\5 - Infrastructure\Pagamentos.Infrastructure\Pagamentos.Infrastructure.csproj" />
+	</ItemGroup>
+
 </Project>
