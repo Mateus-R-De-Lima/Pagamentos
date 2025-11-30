@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Pagamentos.Infrastructure;
+using Pagamentos.Shared.RabbitMq;
 using System;
 
 namespace Pagamentos.Service.Extension
@@ -20,6 +21,8 @@ namespace Pagamentos.Service.Extension
 
             builder.Services.AddDbContext<PagamentoDbContext>(opt =>
                             opt.UseInMemoryDatabase("PagamentosDB"));
+   
+            builder.Services.AddScoped<RabbitMqClient>();
 
             var app = builder.Build();
 

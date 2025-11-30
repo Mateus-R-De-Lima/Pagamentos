@@ -30,6 +30,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "9 - Shared", "9 - Shared", 
 		9 - Shared\docker-compose.yml = 9 - Shared\docker-compose.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pagamentos.Shared", "9 - Shared\Pagamentos.Shared\Pagamentos.Shared.csproj", "{850F6F72-73D9-4591-BF32-A1408062A23F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,6 +62,10 @@ Global
 		{ABFFAD01-5C45-4BF0-BEF0-DAE7F2585151}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ABFFAD01-5C45-4BF0-BEF0-DAE7F2585151}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ABFFAD01-5C45-4BF0-BEF0-DAE7F2585151}.Release|Any CPU.Build.0 = Release|Any CPU
+		{850F6F72-73D9-4591-BF32-A1408062A23F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{850F6F72-73D9-4591-BF32-A1408062A23F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{850F6F72-73D9-4591-BF32-A1408062A23F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{850F6F72-73D9-4591-BF32-A1408062A23F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,6 +77,7 @@ Global
 		{4A06128C-7CB0-4F6D-ABE8-29326A9B3AA3} = {012AF0ED-4307-40C3-BE84-D969DDCE5C6A}
 		{43E19FDB-C475-4F17-9D65-650A763B3F53} = {5340EFC2-73DC-467A-8A5E-736144396FF8}
 		{ABFFAD01-5C45-4BF0-BEF0-DAE7F2585151} = {8609E3A7-6158-42BB-99B2-CA876F743F97}
+		{850F6F72-73D9-4591-BF32-A1408062A23F} = {4B9220AC-69EF-4471-9A9E-97BFB9A1D4CD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3C72E728-9F4A-4322-A76D-1D78ACE554F6}
