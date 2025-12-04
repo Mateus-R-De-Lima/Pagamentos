@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Pagamentos.Communication.DTOs.Pagamento;
+using Pagamentos.Service.Pagamento;
 
 namespace Pagamentos.Emitter.Controllers
 {
@@ -8,10 +10,11 @@ namespace Pagamentos.Emitter.Controllers
     {
 
         [HttpPost]
-        public async Task<IActionResult> PostPagamento()
+        public async Task<IActionResult> PostPagamento([FromServices] IPagamentoService pagamentoService,
+                                                       [FromBody] PagamentoRequest request)
         {
-
-            return Created(string.Empty,"");
+            pagamentoService.Executa(request);
+            return Created(string.Empty, "");
         }
     }
 }

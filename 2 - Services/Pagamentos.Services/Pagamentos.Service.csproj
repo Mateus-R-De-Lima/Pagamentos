@@ -8,10 +8,19 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.9" />
+		<PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
 		<PackageReference Include="SwaggerUi" Version="1.1.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="9.0.6" />
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="9.0.6" />
 
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\3 - Communication\Pagamentos.Communication\Pagamentos.Communication.csproj" />
+	  <ProjectReference Include="..\..\4 - Domain\Pagamentos.Domain\Pagamentos.Domain.csproj" />
+	  <ProjectReference Include="..\..\5 - Infrastructure\Pagamentos.Infrastructure\Pagamentos.Infrastructure.csproj" />
+	  <ProjectReference Include="..\..\9 - Shared\Pagamentos.Shared\Pagamentos.Shared.csproj" />
 	</ItemGroup>
 
 </Project>

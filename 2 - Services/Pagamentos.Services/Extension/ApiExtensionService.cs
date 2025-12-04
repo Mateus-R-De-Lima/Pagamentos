@@ -1,6 +1,11 @@
 ﻿
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Pagamentos.Infrastructure;
+using Pagamentos.Service.Pagamento;
+using Pagamentos.Shared.RabbitMq;
+using System;
 
 namespace Pagamentos.Service.Extension
 {
@@ -15,10 +20,17 @@ namespace Pagamentos.Service.Extension
             builder.Services.AddSwaggerGen();
 
 
+            builder.Services.AddDbContext<PagamentoDbContext>(opt =>
+                            opt.UseInMemoryDatabase("PagamentosDB"));
+   
+            builder.Services.AddScoped<RabbitMqClient>();
+
+            builder.Services.AddScoped<IPagamentoService,PagamentoService>();
+
             var app = builder.Build();
 
 
-         
+
             app.UseSwagger();
             app.UseSwaggerUI();
 
