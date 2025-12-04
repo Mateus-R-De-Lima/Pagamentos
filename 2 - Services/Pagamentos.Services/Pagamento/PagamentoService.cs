@@ -1,4 +1,5 @@
 ﻿using Pagamentos.Communication.DTOs.Pagamento;
+using Pagamentos.Domain.Enums;
 using Pagamentos.Infrastructure;
 using Pagamentos.Shared.ModelNotication;
 using Pagamentos.Shared.RabbitMq;
@@ -13,7 +14,8 @@ namespace Pagamentos.Service.Pagamento
             var pagamento = new Domain.Entities.Pagamento()
             {
                 Titulo = request.Titulo,
-                Valor = request.Valor,
+                Valor = request.Valor,               
+                StatusPagamento = StatusPagamento.Processando
             };
 
             await dbContext.AddAsync(pagamento);
@@ -23,6 +25,8 @@ namespace Pagamentos.Service.Pagamento
             {
                 Id = pagamento.Id,
                 DataCriacao = pagamento.DataCriacao,
+                Titulo = pagamento.Titulo,
+                Valor = pagamento.Valor,
             };
 
             rabbitMq.Publish<PagamentoNotification>(notification);

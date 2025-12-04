@@ -3,11 +3,18 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 using System.Text.Json;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Pagamentos.Shared.RabbitMq
 {
     public class RabbitMqSubscriber
     {
+        private static IServiceProvider _serviceProvider;
+
+        public static void Configure(IServiceProvider serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+        }
 
         public static void Subscribe<T>()
         {
@@ -18,6 +25,12 @@ namespace Pagamentos.Shared.RabbitMq
             var connection = factory.CreateConnection();
             var channel = connection.CreateModel();
 
+            channel.QueueDeclare(queue: queue,
+                     durable: false,
+                     exclusive: false,
+                     autoDelete: false,
+                     arguments: null);
+
             channel.ExchangeDeclare("trigger", ExchangeType.Fanout);
             channel.QueueBind(queue, "trigger", "");
 
@@ -25,10 +38,12 @@ namespace Pagamentos.Shared.RabbitMq
 
             consumer.Received += async (sender, args) =>
             {
+                using var scope = _serviceProvider.CreateScope();
                 var json = Encoding.UTF8.GetString(args.Body.ToArray());
                 var message = JsonSerializer.Deserialize<T>(json);
 
-                await ProcessEvent(message);
+                var handler = scope.ServiceProvider.GetRequiredService<INotificationHandler<T>>();
+                await handler.HandleAsync(message);
 
                 channel.BasicAck(args.DeliveryTag, false);
             };

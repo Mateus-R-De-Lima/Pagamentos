@@ -2,4 +2,6 @@ using Pagamentos.Service.Extension;
 
 var builder = WebApplication.CreateBuilder(args);
 
-ApiExtensionService.WebApplicationBuilderExtension(builder);
+var app = ApiExtensionService.WebApplicationBuilderExtension(builder);
+
+app.Run();

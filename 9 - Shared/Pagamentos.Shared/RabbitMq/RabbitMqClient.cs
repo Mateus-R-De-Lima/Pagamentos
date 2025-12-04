@@ -17,7 +17,7 @@ namespace Pagamentos.Shared.RabbitMq
             var queueName = typeof(T).Name;
             channel.QueueDeclare(
                 queue: queueName,
-                durable: true,
+                durable: false,
                 exclusive: false,
                 autoDelete: false,
                 arguments: null);

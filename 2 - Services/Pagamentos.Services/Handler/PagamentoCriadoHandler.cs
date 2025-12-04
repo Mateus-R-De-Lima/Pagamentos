@@ -1,15 +1,14 @@
-﻿using Pagamentos.Shared.ModelNotication;
+﻿using Pagamentos.Service.ProcessarPagamento;
+using Pagamentos.Shared.ModelNotication;
 using Pagamentos.Shared.NotificationHandler;
 
 namespace Pagamentos.Service.Handler
 {
-    public class PagamentoCriadoHandler : INotificationHandler<PagamentoNotification>
+    public class PagamentoCriadoHandler(IProcessarPagamentoService processarPagamentoService) : INotificationHandler<PagamentoNotification>
     {
-        public Task HandleAsync(PagamentoNotification notification)
+        public async Task HandleAsync(PagamentoNotification notification)
         {
-            var teste = notification;
-
-            return Task.CompletedTask;
+            await processarPagamentoService.Executa(notification);            
         }
     }
 }

@@ -4,6 +4,8 @@ using Pagamentos.Shared.RabbitMq;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var app = ApiExtensionService.WebApplicationBuilderExtension(builder);
+
 RabbitMqSubscriber.Subscribe<PagamentoNotification>();
 
-ApiExtensionService.WebApplicationBuilderExtension(builder);
+app.Run();
