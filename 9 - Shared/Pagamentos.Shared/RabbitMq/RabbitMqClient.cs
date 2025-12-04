@@ -1,4 +1,5 @@
 ﻿using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 using System.Text.Json;
@@ -9,13 +10,7 @@ namespace Pagamentos.Shared.RabbitMq
     {
         public void Publish<T>(T message)
         {
-            // Criando a factory com valores literais
-            var factory = new ConnectionFactory()
-            {
-                HostName = "localhost",
-                UserName = "admin",
-                Password = "admin",
-            };
+            var factory = Factory.ConfigFactory();
 
             using var connection = factory.CreateConnection();
             using var channel = connection.CreateModel();
