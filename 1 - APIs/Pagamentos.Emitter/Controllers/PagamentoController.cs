@@ -13,7 +13,7 @@ namespace Pagamentos.Emitter.Controllers
         public async Task<IActionResult> PostPagamento([FromServices] IPagamentoService pagamentoService,
                                                        [FromBody] PagamentoRequest request)
         {
-            pagamentoService.Executa(request);
+            await pagamentoService.Executa(request);
             return Created(string.Empty, "");
         }
     }

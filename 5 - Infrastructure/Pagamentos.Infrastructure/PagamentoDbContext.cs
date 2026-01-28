@@ -7,8 +7,7 @@ namespace Pagamentos.Infrastructure
     {
         public PagamentoDbContext(DbContextOptions options) : base(options) { }
 
-        public DbSet<Pagamento> Pagamentos { get; set; }
-        public DbSet<PagamentoProcessado> PagamentosProcessados { get; set; }
+        public DbSet<Pagamento> Pagamentos { get; set; }       
 
     }
 }

@@ -1,34 +1,30 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Pagamentos.Communication.DTOs.Pagamento;
-using Pagamentos.Domain.Enums;
-using Pagamentos.Infrastructure;
-using Pagamentos.Service.Pagamento;
+﻿using Pagamentos.Domain.Enums;
+using Pagamentos.Domain.Repositories.Pagamentos;
 using Pagamentos.Shared.ModelNotication;
-using Pagamentos.Shared.RabbitMq;
+using System.Linq.Expressions;
 
 namespace Pagamentos.Service.ProcessarPagamento
 {
-    public class ProcessarPagamentoService(PagamentoDbContext dbContext) : IProcessarPagamentoService
+    public class ProcessarPagamentoService(IPagamentosReadOnlyRepository readOnlyRepository,
+                                           IPagamentoUpdateOnlyRepository pagamentoUpdateOnlyRepository) : IProcessarPagamentoService
     {
 
         public async Task Executa(PagamentoNotification notification)
         {
-            var pagamento = new Domain.Entities.PagamentoProcessado()
-            {
-                DataCriacao = notification.DataCriacao,
-                Valor = notification.Valor,
-                Titulo = notification.Titulo,
-                DataPagamento = DateTime.UtcNow,
-                StatusPagamento = StatusPagamento.Pago
-            };
+            var pagamento = await readOnlyRepository.GetByIdAsync(notification.Id);
 
-            await dbContext.AddAsync(pagamento);
-            await dbContext.SaveChangesAsync();
+            if (pagamento is null)
+            {
+                //TODO: Incluir validações e logs
+                return;
+            }
 
             pagamento.StatusPagamento = StatusPagamento.Pago;
+            pagamento.DataPagamento = DateTime.UtcNow;
 
-            dbContext.Update(pagamento);
-            await dbContext.SaveChangesAsync();
+            Expression<Func<Domain.Entities.Pagamento, bool>> filter = p => p.Id == pagamento.Id;
+
+            pagamentoUpdateOnlyRepository.Update(pagamento, filter);
 
         }
     }

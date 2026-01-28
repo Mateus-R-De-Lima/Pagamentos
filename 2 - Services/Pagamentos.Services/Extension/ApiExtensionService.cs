@@ -1,8 +1,12 @@
 ﻿
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Pagamentos.Domain.Repositories.Pagamentos;
 using Pagamentos.Infrastructure;
+using Pagamentos.Infrastructure.DataAccess;
+using Pagamentos.Infrastructure.Mongo;
 using Pagamentos.Service.Pagamento;
 using Pagamentos.Service.ProcessarPagamento;
 using Pagamentos.Shared.RabbitMq;
@@ -25,9 +29,17 @@ namespace Pagamentos.Service.Extension
                             opt.UseInMemoryDatabase("PagamentosDB"));
 
             builder.Services.AddHandlers();
-
-
             builder.Services.AddScoped<RabbitMqClient>();
+
+            builder.Services.Configure<MongoSettings>(builder.Configuration.GetSection("MongoSettings"));        
+
+          
+            builder.Services.AddSingleton<MongoContext>();
+
+            // Repositories
+            builder.Services.AddScoped<IPagamentosReadOnlyRepository, PagamentoRepository>();
+            builder.Services.AddScoped<IPagamentoUpdateOnlyRepository, PagamentoRepository>();
+            builder.Services.AddScoped<IPagamentoWriteOnlyRepository, PagamentoRepository>();
 
             builder.Services.AddScoped<IPagamentoService, PagamentoService>();
             builder.Services.AddScoped<IProcessarPagamentoService, ProcessarPagamentoService>();
