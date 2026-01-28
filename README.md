@@ -1,142 +1,175 @@
-# 📦 Pagamentos
+# 🚀 Pagamentos – Sistema Assíncrono de Processamento de Pagamentos com RabbitMQ e MongoDB
 
-> **Projeto de estudos em C# (.NET) com RabbitMQ**  
-> Este repositório foi criado **exclusivamente para fins educacionais**, com o objetivo de praticar conceitos de arquitetura, mensageria e boas práticas de desenvolvimento em C#.
+Este repositório contém um **projeto de estudo em C# (.NET)** que demonstra a construção de um **sistema de pagamentos assíncrono**, utilizando **RabbitMQ para mensageria** e **MongoDB como banco de dados NoSQL** para persistência dos pagamentos.
 
----
-
-## 🎯 Objetivo do Projeto
-
-O projeto **Pagamentos** tem como principal finalidade o **aprendizado prático**. Ele simula um fluxo simples de processamento de pagamentos utilizando **mensageria assíncrona**, permitindo estudar:
-
-- Comunicação entre serviços via **RabbitMQ**
-- Separação de responsabilidades (Emitter x Consumer)
-- Organização de projetos em camadas
-- Conceitos básicos de arquitetura orientada a eventos
-- Estruturação de soluções em **.NET**
-
-⚠️ **Importante:** este projeto **não deve ser utilizado em produção**. Ele não contempla todas as validações, regras de negócio e requisitos de segurança necessários para um sistema real.
+O foco principal do projeto é **aprendizado prático** de arquitetura distribuída, mensageria e persistência em NoSQL, simulando um cenário real de processamento de pagamentos.
 
 ---
 
-## 🧱 Estrutura do Repositório
+## 📌 Objetivo do Projeto
 
-A solução foi organizada de forma modular para facilitar o entendimento:
+O objetivo deste projeto é:
 
+- Estudar **mensageria assíncrona com RabbitMQ**
+- Aplicar **desacoplamento entre serviços** (Producer x Consumer)
+- Persistir dados de pagamentos em um **banco NoSQL (MongoDB)** de forma simples e objetiva
+- Simular um **fluxo real de processamento de pagamentos**
+- Aplicar boas práticas de organização de projeto em **C# / .NET**
+
+> ⚠️ **Importante:** Este é um projeto de estudo e aprendizado. Não possui foco em regras fiscais, segurança bancária ou certificações de produção.
+
+---
+
+## 🧠 Tecnologias e Conceitos Utilizados
+
+| Tecnologia | Finalidade |
+|-----------|-----------|
+| **C# / .NET** | Plataforma principal de desenvolvimento |
+| **RabbitMQ** | Broker de mensagens para comunicação assíncrona |
+| **MongoDB** | Banco de dados NoSQL para persistência dos pagamentos |
+| **Mensageria (AMQP)** | Processamento desacoplado e escalável |
+| **NoSQL** | Armazenamento flexível de dados de pagamento |
+| **Arquitetura por Camadas** | Organização e separação de responsabilidades |
+
+---
+
+## 🧩 Arquitetura do Sistema
+
+O sistema é dividido em responsabilidades bem definidas:
+
+1. **Emitter (Producer)**
+   - Responsável por criar e enviar mensagens de pagamento para o RabbitMQ
+
+2. **RabbitMQ (Message Broker)**
+   - Responsável por intermediar a comunicação entre os serviços
+
+3. **Consumer**
+   - Consome as mensagens da fila
+   - Processa os dados do pagamento
+   - Salva o pagamento no **MongoDB**
+
+4. **MongoDB (NoSQL)**
+   - Armazena os pagamentos processados
+   - Utilizado de forma simplificada para fins de estudo
+
+---
+
+## 📂 Estrutura do Repositório
+
+```text
+/APIs
+  └── Pagamentos.Emitter        -> API responsável por publicar mensagens
+/Consumers
+  └── Pagamentos.Consumer      -> Serviço que consome mensagens
+/Domain
+  └── Pagamentos.Domain        -> Entidades e regras de negócio
+/Infrastructure
+  └── Pagamentos.Infrastructure-> MongoDB, RabbitMQ e infraestrutura
+/Shared
+  └── Pagamentos.Shared        -> DTOs, notificações e contratos
+Pagamentos.sln                 -> Solução principal
 ```
-📂 Pagamentos
- ├── 📁 APIs/
- │   └── Pagamentos.Emitter          # Serviço responsável por publicar eventos de pagamento
- ├── 📁 Communication/
- │   └── Pagamentos.Communication    # Camada de integração com RabbitMQ
- ├── 📁 Domain/
- │   └── Pagamentos.Domain           # Entidades e regras de negócio
- ├── 📁 Infrastructure/
- │   └── Pagamentos.Infrastructure  # Configurações e infraestrutura
- ├── 📁 Shared/
- │   └── Pagamentos.Shared           # Componentes compartilhados
- ├── Pagamentos.Consumer             # Serviço que consome e processa as mensagens
- ├── Pagamentos.sln                  # Solução principal
- └── .gitignore
+
+Essa estrutura facilita manutenção, testes e entendimento do fluxo do sistema.
+
+---
+
+## 🗄️ Persistência com MongoDB (NoSQL)
+
+O **MongoDB** foi escolhido para:
+
+- Estudo de **banco NoSQL orientado a documentos**
+- Facilidade de armazenamento de dados semi‑estruturados
+- Evitar complexidade de mapeamentos relacionais
+
+### 📌 Como é usado no projeto
+
+- Cada pagamento processado pelo **Consumer** é salvo como um documento
+- Não há relacionamentos complexos
+- Estrutura simples, focada em aprendizado
+
+Exemplo conceitual de documento salvo:
+
+```json
+{
+  "_id": "ObjectId",  
+  "valor": 150.00,
+  "status": "Processado",
+  "dataCriacao": "2026-01-27T10:00:00"
+}
 ```
 
-Essa divisão ajuda a entender melhor o papel de cada camada dentro de uma aplicação distribuída.
+---
+
+## 🚀 Como Executar o Projeto
+
+### 📌 Pré‑requisitos
+
+- .NET SDK
+- Docker (opcional, recomendado)
+- RabbitMQ
+- MongoDB
+
+### ▶️ Subindo RabbitMQ e MongoDB via Docker
+
+```bash
+docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+
+docker run -d --name mongodb -p 27017:27017 mongo
+```
 
 ---
 
-## 🔄 Fluxo de Funcionamento
-
-1. O **Pagamentos.Emitter** envia uma mensagem de pagamento para o RabbitMQ.
-2. O **RabbitMQ** atua como intermediário, armazenando e roteando a mensagem.
-3. O **Pagamentos.Consumer** consome essa mensagem e executa o processamento.
-
-Esse fluxo representa um cenário comum em arquiteturas modernas baseadas em eventos.
-
----
-
-## 🛠️ Tecnologias Utilizadas
-
-- **C# / .NET**
-- **RabbitMQ** (mensageria)
-- **Docker** (opcional, para execução do RabbitMQ)
-- **Visual Studio / VS Code**
-- **Git & GitHub**
-
----
-
-## 📋 Pré-requisitos
-
-Para executar o projeto localmente, é necessário:
-
-- .NET SDK 6.0 ou superior
-- RabbitMQ em execução (local ou via Docker)
-- IDE compatível com .NET (Visual Studio ou VS Code)
-
----
-
-## ▶️ Como Executar o Projeto
-
-### 1️⃣ Clonar o repositório
+### 📥 Clonar o Repositório
 
 ```bash
 git clone https://github.com/Mateus-R-De-Lima/Pagamentos.git
 cd Pagamentos
 ```
 
-### 2️⃣ Subir o RabbitMQ com Docker (opcional)
+---
 
-```bash
-docker run -d --name rabbitmq \
-  -p 5672:5672 \
-  -p 15672:15672 \
-  rabbitmq:3-management
-```
-
-A interface de gerenciamento estará disponível em:
-
-```
-http://localhost:15672
-```
-Usuário e senha padrão:
-```
-guest / guest
-```
-
-### 3️⃣ Restaurar e compilar a solução
+### ⚙️ Build do Projeto
 
 ```bash
 dotnet restore
 dotnet build
 ```
 
-### 4️⃣ Executar os serviços
+---
 
-- Inicie o **Pagamentos.Consumer**
-- Em seguida, execute o **Pagamentos.Emitter**
+### ▶️ Executar
 
-Observe no console o envio e o consumo das mensagens.
+1. Inicie o **RabbitMQ** e o **MongoDB**
+2. Execute o projeto **Pagamentos.Emitter**
+3. Execute o projeto **Pagamentos.Consumer**
+
+Ao enviar um pagamento, ele será:
+
+➡️ Publicado no RabbitMQ
+➡️ Consumido pelo Consumer
+➡️ Persistido no MongoDB
 
 ---
 
-## 📚 Possíveis Evoluções (Estudos Futuros)
+## 📈 Aprendizados Abordados
 
-Este projeto pode ser expandido para aprofundar os estudos, por exemplo:
-
-- Adicionar persistência em banco de dados
-- Criar uma API REST para envio de pagamentos
-- Implementar testes unitários e de integração
-- Utilizar Dead Letter Queues (DLQ)
-- Criar containers Docker para todos os serviços
-- Aplicar padrões como Retry, Circuit Breaker e Idempotência
+✔ Mensageria com RabbitMQ
+✔ Processamento assíncrono
+✔ Integração com MongoDB
+✔ Arquitetura desacoplada
+✔ Organização de projetos em .NET
 
 ---
 
-## 👨‍💻 Autor
+## 🔮 Possíveis Evoluções
 
-**Mateus R. de Lima**  
-Projeto desenvolvido com foco em aprendizado e prática de **C#**, **RabbitMQ** e **arquitetura de software**.
+- Implementar retry e dead‑letter queue
+- Adicionar logs estruturados
+- Criar testes unitários e de integração
+- Adicionar versionamento de eventos
+- Criar dashboard de monitoramento
 
 ---
-
-⭐ Se este repositório te ajudou de alguma forma, fique à vontade para deixar uma estrela!
+💡 *Projeto desenvolvido por Mateus Lima para fins educacionais e evolução técnica em C# e arquitetura distribuída.*
 
