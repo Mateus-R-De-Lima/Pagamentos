@@ -1,4 +1,5 @@
 ﻿
+using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -7,8 +8,10 @@ using Pagamentos.Domain.Repositories.Pagamentos;
 using Pagamentos.Infrastructure;
 using Pagamentos.Infrastructure.DataAccess;
 using Pagamentos.Infrastructure.Mongo;
+using Pagamentos.Service.Comprovante;
 using Pagamentos.Service.Pagamento;
 using Pagamentos.Service.ProcessarPagamento;
+using Pagamentos.Shared.AzureBlobStorageService;
 using Pagamentos.Shared.RabbitMq;
 using System;
 
@@ -43,6 +46,26 @@ namespace Pagamentos.Service.Extension
 
             builder.Services.AddScoped<IPagamentoService, PagamentoService>();
             builder.Services.AddScoped<IProcessarPagamentoService, ProcessarPagamentoService>();
+
+       
+
+            builder.Services.AddScoped(x =>
+            {
+                var configuration = x.GetRequiredService<IConfiguration>();
+
+                var connectionString =
+                    configuration["AzureStorage:ConnectionString"];
+
+                return new BlobServiceClient(connectionString);
+            });
+
+            builder.Services.AddScoped<IComprovanteService, EnviarComprovanteService>();
+
+            builder.Services.AddScoped<IDeletarComprovanteService, DeletarComprovanteService>();
+
+            builder.Services.Configure<AzureStorageSettings>(builder.Configuration.GetSection("AzureStorage"));
+
+            builder.Services.AddScoped<IAzureBlobStorageService, AzureBlobStorageService>();
 
             var app = builder.Build();
 
