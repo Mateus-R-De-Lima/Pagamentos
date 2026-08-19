@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\2 - Services\Pagamentos.Services\Pagamentos.Service.csproj" />
+    <ProjectReference Include="..\..\3 - Communication\Pagamentos.Communication\Pagamentos.Communication.csproj" />
   </ItemGroup>
 
 </Project>

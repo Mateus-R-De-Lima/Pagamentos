@@ -19,57 +19,56 @@ namespace Pagamentos.Service.Extension
 {
     public static class ApiExtensionService
     {
+        public static IServiceCollection AddPagamentosServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddDbContext<PagamentoDbContext>(opt =>
+                            opt.UseInMemoryDatabase("PagamentosDB"));
+
+            services.AddHandlers();
+            services.AddScoped<RabbitMqClient>();
+
+            services.Configure<MongoSettings>(configuration.GetSection("MongoSettings"));
+
+            services.AddSingleton<MongoContext>();
+
+            services.AddScoped<IPagamentosReadOnlyRepository, PagamentoRepository>();
+            services.AddScoped<IPagamentoUpdateOnlyRepository, PagamentoRepository>();
+            services.AddScoped<IPagamentoWriteOnlyRepository, PagamentoRepository>();
+
+            services.AddScoped<IPagamentoService, PagamentoService>();
+            services.AddScoped<IProcessarPagamentoService, ProcessarPagamentoService>();
+
+            services.AddScoped(x =>
+            {
+                var config = x.GetRequiredService<IConfiguration>();
+
+                var connectionString =
+                    config["AzureStorage:ConnectionString"];
+
+                return new BlobServiceClient(connectionString);
+            });
+
+            services.AddScoped<IComprovanteService, EnviarComprovanteService>();
+
+            services.AddScoped<IDeletarComprovanteService, DeletarComprovanteService>();
+
+            services.Configure<AzureStorageSettings>(configuration.GetSection("AzureStorage"));
+
+            services.AddScoped<IAzureBlobStorageService, AzureBlobStorageService>();
+
+            return services;
+        }
+
         public static WebApplication WebApplicationBuilderExtension(this WebApplicationBuilder builder)
         {
-
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-
-            builder.Services.AddDbContext<PagamentoDbContext>(opt =>
-                            opt.UseInMemoryDatabase("PagamentosDB"));
-
-            builder.Services.AddHandlers();
-            builder.Services.AddScoped<RabbitMqClient>();
-
-            builder.Services.Configure<MongoSettings>(builder.Configuration.GetSection("MongoSettings"));        
-
-          
-            builder.Services.AddSingleton<MongoContext>();
-
-            // Repositories
-            builder.Services.AddScoped<IPagamentosReadOnlyRepository, PagamentoRepository>();
-            builder.Services.AddScoped<IPagamentoUpdateOnlyRepository, PagamentoRepository>();
-            builder.Services.AddScoped<IPagamentoWriteOnlyRepository, PagamentoRepository>();
-
-            builder.Services.AddScoped<IPagamentoService, PagamentoService>();
-            builder.Services.AddScoped<IProcessarPagamentoService, ProcessarPagamentoService>();
-
-       
-
-            builder.Services.AddScoped(x =>
-            {
-                var configuration = x.GetRequiredService<IConfiguration>();
-
-                var connectionString =
-                    configuration["AzureStorage:ConnectionString"];
-
-                return new BlobServiceClient(connectionString);
-            });
-
-            builder.Services.AddScoped<IComprovanteService, EnviarComprovanteService>();
-
-            builder.Services.AddScoped<IDeletarComprovanteService, DeletarComprovanteService>();
-
-            builder.Services.Configure<AzureStorageSettings>(builder.Configuration.GetSection("AzureStorage"));
-
-            builder.Services.AddScoped<IAzureBlobStorageService, AzureBlobStorageService>();
+            builder.Services.AddPagamentosServices(builder.Configuration);
 
             var app = builder.Build();
-
-
 
             app.UseSwagger();
             app.UseSwaggerUI();
@@ -84,7 +83,6 @@ namespace Pagamentos.Service.Extension
             RabbitMqSubscriber.Configure(app.Services);
 
             return app;
-
         }
     }
 }
