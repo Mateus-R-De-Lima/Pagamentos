@@ -1,7 +1,12 @@
-﻿namespace Pagamentos.Domain.Entities
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
+namespace Pagamentos.Domain.Entities
 {
     public class Comprovante
     {
+        [BsonId]
+        [BsonRepresentation(BsonType.String)]
         public Guid Id { get; set; } = Guid.NewGuid();
 
         public string PagamentoId { get; set; } = string.Empty;

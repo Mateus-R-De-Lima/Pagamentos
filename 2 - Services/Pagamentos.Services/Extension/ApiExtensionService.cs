@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Pagamentos.Domain.Repositories.Comprovantes;
 using Pagamentos.Domain.Repositories.Pagamentos;
 using Pagamentos.Infrastructure;
 using Pagamentos.Infrastructure.DataAccess;
@@ -34,6 +35,7 @@ namespace Pagamentos.Service.Extension
             services.AddScoped<IPagamentosReadOnlyRepository, PagamentoRepository>();
             services.AddScoped<IPagamentoUpdateOnlyRepository, PagamentoRepository>();
             services.AddScoped<IPagamentoWriteOnlyRepository, PagamentoRepository>();
+            services.AddScoped<IComprovanteWriteOnlyRepository, ComprovanteRepository>();
 
             services.AddScoped<IPagamentoService, PagamentoService>();
             services.AddScoped<IProcessarPagamentoService, ProcessarPagamentoService>();
@@ -51,6 +53,8 @@ namespace Pagamentos.Service.Extension
             services.AddScoped<IComprovanteService, EnviarComprovanteService>();
 
             services.AddScoped<IDeletarComprovanteService, DeletarComprovanteService>();
+
+            services.AddScoped<ISalvarComprovanteService, SalvarComprovanteService>();
 
             services.Configure<AzureStorageSettings>(configuration.GetSection("AzureStorage"));
 
